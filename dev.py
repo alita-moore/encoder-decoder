@@ -54,7 +54,7 @@ import os
 os.makedirs("temp", exist_ok=True)
 
 compiled_model = get_model(config, "cuda")
-compiled_model.decoder.model = torch.compile(compiled_model.decoder.model, mode="reduce-overhead") # type: ignore
+compiled_model.decoder.model = torch.compile(compiled_model.decoder.model, mode="max-autotune") # type: ignore
 
 img = torch.randn(1, 1, 224, 224).to("cuda")
 
@@ -66,7 +66,7 @@ with torch.no_grad():
 with torch.profiler.profile() as prof:
     with torch.no_grad(): 
         with torch.autocast("cuda", dtype=torch.bfloat16):
-            for _ in range(10):
+            for _ in range(5):
                 output = compiled_model.generate(img, max_length=1)
                 prof.step()
 
