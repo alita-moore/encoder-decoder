@@ -4,16 +4,18 @@ version = "0.1.0"
 description = ""
 authors = ["Alita Moore <alita.moore805@gmail.com>"]
 readme = "README.md"
-packages = [{include = "encoder_decoder"}]
+packages = [{include = "img_to_text"}]
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.11"
 psutil = "^5.9.7"
 timm = "^1.0.8"
 transformers = "^4.44.2"
-torch = {version = "^2.5.0.dev20240829+cu124", allow-prereleases = true, source = "pytorch-gpu-src"}
-torchvision = {version = "^0.20.0.dev20240829+cu124", allow-prereleases = true, source = "pytorch-gpu-src"}
-torchaudio = {version = "^2.5.0.dev20240829+cu124", allow-prereleases = true, source = "pytorch-gpu-src"}
+pydantic = "^2.8.2"
+torch = "^2.4.0"
+torchvision = "^0.19.0"
+torchaudio = "^2.4.0"
+ipykernel = "^6.29.5"
 
 [[tool.poetry.source]]
 name = "PyPI"
@@ -24,6 +26,10 @@ priority = "primary"
 name = "pytorch-gpu-src"
 url = "https://download.pytorch.org/whl/nightly/cu124"
 priority = "explicit"
+
+
+[tool.poetry.group.dev.dependencies]
+ipykernel = "^6.29.5"
 
 [build-system]
 requires = ["poetry-core"]

@@ -1,9 +1,8 @@
 from typing import Any
 import torch.nn as nn
-from ....domain import DecoderArgs
-from transformers import WhisperForCausalLM
+from ..domain import DecoderArgs
 import torch.nn.functional as F
-from ....timer import Timer
+from ..timer import Timer
 from .text_decoder import TextDecoder
 import torch
 
@@ -35,18 +34,12 @@ class Decoder(nn.Module):
         dim: int,
         dtype: torch.dtype,
         batch_size: int,
-        model: WhisperForCausalLM | None = None,
     ):
         super().__init__()
         self.decoder_args = decoder_args
         self.max_patches = max_patches
         self.dtype = dtype
         self.batch_size = batch_size
-
-        if model is not None:
-            self.model = model
-            return
-
         self.model = TextDecoder(
             n_vocab=decoder_args.vocab_size,
             n_ctx=decoder_args.max_seq_len,
@@ -112,7 +105,7 @@ class Decoder(nn.Module):
             timer.push_event("Selected token")
         if timer:
             timer.stop()
-            timer.log()
+            timer.report()
         return x
 
     def generate(
@@ -200,11 +193,9 @@ def get_decoder(
     dim: int,
     batch_size: int,
     kv_cache_dtype: torch.dtype,
-    model: WhisperForCausalLM | None = None,
 ):
     return Decoder(
         decoder_args=decoder_args,
-        model=model,
         dim=dim,
         max_patches=max_patches,
         dtype=kv_cache_dtype,

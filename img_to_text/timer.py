@@ -112,7 +112,7 @@ class Timer(BaseModel):
     def indent(self):
         return "--" * self.depth
 
-    def log(self):
+    def report(self):
         if not self.enabled:
             return
         if self.depth == 0:
@@ -130,7 +130,7 @@ class Timer(BaseModel):
                     # if the depth is 0, but I choose not to do this because I generally find
                     # this easier to reason about.
                     logging.debug(f"{child.indent} {child.name} {child.indent}")
-                    child.log()
+                    child.report()
                     logging.debug(
                         f"{child.indent} Total: {total_time:.5f}s ({total_time / self.get_total_time():.2%} of {self.name})"
                     )
