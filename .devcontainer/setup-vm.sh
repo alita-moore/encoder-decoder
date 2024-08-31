@@ -43,10 +43,27 @@ sudo dpkg -i cuda-keyring_1.1-1_all.deb
 sudo apt-get update
 sudo apt-get -y install cuda-toolkit-12-4
 
-apt-get update && apt-get install -y nvidia-detect
+sudo apt-get update && sudo apt-get install -y ubuntu-drivers-common
 
-apt-get update && \
-    NV_DRIVER=$(nvidia-detect -v | grep recommended | awk '{print $4}') && \
-    apt-get install -y $NV_DRIVER && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+sudo apt-get update && \
+    NV_DRIVER=$(ubuntu-drivers devices | grep recommended | awk '{print $3}') && \
+    sudo apt-get install -y $NV_DRIVER && \
+    sudo apt-get clean && \
+    sudo rm -rf /var/lib/apt/lists/*
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+
+echo 'export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.bashrc
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+nvm install 20 && nvm use 20
+
+npm install -g @devcontainers/cli
+
+sudo usermod -aG docker ubuntu
+
