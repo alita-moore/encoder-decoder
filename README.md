@@ -6,6 +6,9 @@ An image to text encoder decoder built using pytorch
 
 You will need python 3.10 and poetry installed to run this project. I recommend that you run it in a devcontainer, though. 
 
+## Devcontainer setup
+First, allocate an ubuntu (22.04) vm instace with gpu and ssh into it.
+
 1. create the working directory: `sudo mkdir \workspace && cd \workspace`
 2. clone the repository `git clone https://github.com/alita-moore/img-to-text && cd img-to-text`
 3. setup the vm `sudo bash .devcontainer/setup-vm.sh` (you'll need to press enter / yes during the process)
@@ -13,10 +16,11 @@ You will need python 3.10 and poetry installed to run this project. I recommend 
 5. run `docker login` and login to docker, this is necessary to pull the relevant cuda image
 6. build and launch the devcontainer `devcontainer up --workspace-folder . --remove-existing-container`
 7. setup a local docker context and connect to the running devcontainer remotely via vscode (tutorial: https://www.doppler.com/blog/visual-studio-code-remote-dev-containers-on-aws)
+8. once inside of the container navigate to /workspaces/img-to-text and run `poetry install`
 
-To do so first allocate an ubuntu (22.04) vm instace with gpu, ssh into it and then clone this repository, setup the vm using the setup script at `bash .devcontainer/setup-vm.sh`. 
+## Local setup
 
-To use run `poetry install` from the root directory. If you don't have poetry installed you can do so by running the following command: `pip install pipx && pipx install poetry && pipx ensurepath`.
+If you wish to run this code locally instead, make sure you have at least cuda 12.4 installed and then run `poetry install`. You can install poetry via `pip install pipx && pipx install poetry && pipx ensurepath` if it's not already installed.
 
 # Acknowledgments
 
