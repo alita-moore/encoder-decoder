@@ -54,14 +54,14 @@ class Decoder(nn.Module):
         encoder_outputs: torch.Tensor,
         encoder_cache_pos: torch.Tensor,
         use_encoder_cache: bool,
-        timer: Timer | None = None,
+        timer: Timer | None = None
     ):
         last_input_ids, cache_position = self.prepare_inputs_for_generation(
             input_ids=input_ids,
         )
 
         if timer:
-            timer.push_event("Prepared inputs for generation")
+            timer.push_event("Prepared inputs for generation", False)
         outputs = self.model(
             input_ids=last_input_ids,
             encoder_outputs=encoder_outputs,
@@ -70,7 +70,7 @@ class Decoder(nn.Module):
             use_encoder_cache=use_encoder_cache,
         )
         if timer:
-            timer.push_event("Generated token")
+            timer.push_event("Generated token", False)
         logits = outputs
         # take the logits at the last position
         logits = logits[:, -1, :]  # (B, vocab_size)
@@ -87,7 +87,7 @@ class Decoder(nn.Module):
         # append to the sequence
         x = torch.cat((input_ids, xcol), dim=1)
         if timer:
-            timer.push_event("Selected token")
+            timer.push_event("Selected token", False)
         if timer:
             timer.stop()
             timer.report()

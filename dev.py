@@ -1,6 +1,7 @@
 # %%
 from img_to_text.domain import Config, DecoderArgs, EncoderArgs
-from img_to_text.architecture import get_model
+from img_to_text.model import get_model
+
 config = Config(
     decoder_args=DecoderArgs(
         heads=16,
@@ -33,12 +34,13 @@ config = Config(
     mixed_precision=True,
 )
 
-model = get_model(config, "cuda", False)
+model = get_model(config, "cuda")
 
 # %%
 import torch
 from img_to_text.timer import Timer
 import logging
+
 logging.getLogger().setLevel(logging.DEBUG)
 
 img = torch.randn(1, 1, 224, 224).to("cuda")
@@ -53,8 +55,8 @@ import os
 
 os.makedirs("temp", exist_ok=True)
 
-compiled_model = get_model(config, "cuda", False)
-compiled_model.decoder.model = torch.compile(compiled_model.decoder.model, mode="max-autotune") # type: ignore
+compiled_model = get_model(config, "cuda")
+compiled_model.decoder.model = torch.compile(compiled_model.decoder.model, mode="max-autotune")  # type: ignore
 
 img = torch.randn(1, 1, 224, 224).to("cuda")
 
@@ -64,12 +66,11 @@ with torch.no_grad():
         compiled_model.generate(img, timer=timer, max_length=10)
 
 with torch.profiler.profile() as prof:
-    with torch.no_grad(): 
+    with torch.no_grad():
         with torch.autocast("cuda", dtype=torch.bfloat16):
-            for _ in range(5):
-                # NOTE: 3 is equivalent to 1 token + 2 special tokens
-                output = compiled_model.generate(img, max_length=3)
-                prof.step()
+            # NOTE: 3 is equivalent to 1 token + 2 special tokens
+            output = compiled_model.generate(img, max_length=3)
+            prof.step()
 
 prof.export_chrome_trace("temp/torch_trace.json")
 

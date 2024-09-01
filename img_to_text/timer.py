@@ -36,7 +36,7 @@ class Timer(BaseModel):
     _stop_time: float | None = None
     # NOTE: we allow for the timer to be disabled so that we can avoid non-master
     # processes from logging the timer events
-    enabled: bool  = True
+    enabled: bool = True
     synchronize: Callable[[], None] | None = lambda: torch.cuda.synchronize()
 
     def model_post_init(self, __context: Any) -> None:
@@ -58,7 +58,7 @@ class Timer(BaseModel):
         else:
             raise ValueError("No reference time found")
 
-    def push_event(self, event_name: str):
+    def push_event(self, event_name: str, log_now: bool = True):
         if not logging.getLogger().isEnabledFor(logging.DEBUG):
             return
         if not self.enabled:
@@ -69,7 +69,10 @@ class Timer(BaseModel):
         self._events.append(
             ((event_name, time.time() - latest_event), EventType.STANDARD)
         )
-        logging.debug(f"{self.indent} {event_name}: {time.time() - latest_event:.5f}s")
+        if log_now:
+            logging.debug(
+                f"{self.indent} {event_name}: {time.time() - latest_event:.5f}s"
+            )
         self.push_reference_time()
 
     @property
