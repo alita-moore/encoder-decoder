@@ -90,7 +90,7 @@ class Decoder(nn.Module):
             timer.push_event("Selected token")
         if timer:
             timer.stop()
-            timer.log()
+            timer.report()
         return x
 
     def generate(
