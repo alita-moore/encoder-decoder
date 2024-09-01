@@ -1,6 +1,6 @@
 # %%
 from img_to_text.domain import Config, DecoderArgs, EncoderArgs
-from img_to_text.model import get_model
+from img_to_text.architecture import get_model
 config = Config(
     decoder_args=DecoderArgs(
         heads=16,
@@ -25,7 +25,7 @@ config = Config(
         output_dimensions=1024,
         input_dimensions=128,
         patch_size=4,
-        grad_checkpointing=True,
+        grad_checkpointing=False,
         input_channels=1,
         blocks=3,
     ),
@@ -33,7 +33,7 @@ config = Config(
     mixed_precision=True,
 )
 
-model = get_model(config, "cuda")
+model = get_model(config, "cuda", False)
 
 # %%
 import torch
@@ -53,7 +53,7 @@ import os
 
 os.makedirs("temp", exist_ok=True)
 
-compiled_model = get_model(config, "cuda")
+compiled_model = get_model(config, "cuda", False)
 compiled_model.decoder.model = torch.compile(compiled_model.decoder.model, mode="max-autotune") # type: ignore
 
 img = torch.randn(1, 1, 224, 224).to("cuda")
@@ -71,3 +71,5 @@ with torch.profiler.profile() as prof:
                 prof.step()
 
 prof.export_chrome_trace("temp/torch_trace.json")
+
+# %%
