@@ -10,7 +10,7 @@ You will need python 3.10 and poetry installed to run this project. I recommend 
 First, allocate an ubuntu (22.04) vm instace with gpu and ssh into it.
 
 1. create the working directory: `sudo mkdir /workspace && cd /workspace`
-2. clone the repository `sudo git clone https://github.com/alita-moore/img-to-text && cd img-to-text`
+2. clone the repository `sudo git clone https://github.com/alita-moore/img-to-text && sudo chown -R ubuntu:ubuntu && cd img-to-text`
 3. setup the vm `sudo bash .devcontainer/setup-vm.sh` (you'll need to press enter / yes during the process)
 4. Restart your machine: `sudo shutdown -r now` (you'll need to ssh back into the system)
 5. cd into the project directory `cd /workspace/img-to-text`
