@@ -31,4 +31,4 @@ If you wish to run this code locally instead, make sure you have at least cuda 1
 
 # Acknowledgments
 
-The decoder code was largely provided by https://github.com/EleutherAI/aria-amt
+The text_decoder code was largely provided by https://github.com/EleutherAI/aria-amt
