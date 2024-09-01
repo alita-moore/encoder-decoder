@@ -14,10 +14,11 @@ First, allocate an ubuntu (22.04) vm instace with gpu and ssh into it.
 3. setup the vm `sudo bash .devcontainer/setup-vm.sh` (you'll need to press enter / yes during the process)
 4. Restart your machine: `sudo shutdown -r now` (you'll need to ssh back into the system)
 5. cd into the project directory `cd /workspace/img-to-text`
-6. run `docker login` and login to docker, this is necessary to pull the relevant cuda image
-7. build and launch the devcontainer `devcontainer up --workspace-folder . --remove-existing-container`
-8. setup a local docker context and connect to the running devcontainer remotely via vscode (tutorial: https://www.doppler.com/blog/visual-studio-code-remote-dev-containers-on-aws)
-9. once inside of the container navigate to /workspaces/img-to-text and run `poetry install`
+6. re-run the setup script to make sure all dependencies are installed `sudo bash .devcontainer/setup-vm.sh`
+7. run `docker login` and login to docker, this is necessary to pull the relevant cuda image
+8. build and launch the devcontainer `devcontainer up --workspace-folder . --remove-existing-container`
+9. setup a local docker context and connect to the running devcontainer remotely via vscode (tutorial: https://www.doppler.com/blog/visual-studio-code-remote-dev-containers-on-aws)
+10. once inside of the container navigate to /workspaces/img-to-text and run `poetry install`
 
 ## Running the model
 
