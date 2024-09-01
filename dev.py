@@ -67,7 +67,8 @@ with torch.profiler.profile() as prof:
     with torch.no_grad(): 
         with torch.autocast("cuda", dtype=torch.bfloat16):
             for _ in range(5):
-                output = compiled_model.generate(img, max_length=1)
+                # NOTE: 3 is equivalent to 1 token + 2 special tokens
+                output = compiled_model.generate(img, max_length=3)
                 prof.step()
 
 prof.export_chrome_trace("temp/torch_trace.json")
