@@ -11,21 +11,6 @@ __all__ = [
     "Decoder",
 ]
 
-
-class EndOfSequenceChecker:
-    def __init__(self, end_of_seq_token_id: int, device: str | torch.device):
-        self.end_of_seq_token_id = torch.tensor(
-            [end_of_seq_token_id], dtype=torch.long, device=device
-        )
-
-    def test(self, other: torch.Tensor) -> bool:
-        if other.dim() == 1:
-            return torch.equal(self.end_of_seq_token_id, other[-1:])
-        elif other.dim() == 2:
-            return torch.equal(self.end_of_seq_token_id, other[:, -1])
-        raise ValueError("Input tensor must be 1D or 2D")
-
-
 class Decoder(nn.Module):
     def __init__(
         self,
@@ -105,7 +90,7 @@ class Decoder(nn.Module):
             timer.push_event("Selected token")
         if timer:
             timer.stop()
-            timer.report()
+            timer.log()
         return x
 
     def generate(
@@ -118,21 +103,17 @@ class Decoder(nn.Module):
             max_length
             and max_length > self.decoder_args.max_seq_len
             or max_length
-            and max_length < 0
+            and max_length <= 2
         ):
             raise ValueError(
-                f"max_length must be in the range [0, {self.decoder_args.max_seq_len}]"
+                f"max_length must be in the range (2, {self.decoder_args.max_seq_len}] but got {max_length}"
             )
 
         max_length = max_length or self.decoder_args.max_seq_len
         x = torch.full(
-            (1, 1),
+            (encoder_outputs.shape[0], 1),
             self.decoder_args.beg_of_seq_token_id,
             dtype=torch.long,
-            device=encoder_outputs.device,
-        )
-        eos_checker = EndOfSequenceChecker(
-            end_of_seq_token_id=self.decoder_args.end_of_seq_token_id,
             device=encoder_outputs.device,
         )
         try:
@@ -140,14 +121,15 @@ class Decoder(nn.Module):
                 0, encoder_outputs.shape[1], device=encoder_outputs.device
             )
             self.model.setup_cache(
-                1,
+                encoder_outputs.shape[0],
                 self.decoder_args.max_seq_len,
                 self.max_patches,
                 device=encoder_outputs.device,
                 dtype=self.dtype,
             )
 
-            for i in range(max_length - 1):
+            # NOTE: we subtract 2 because we have to account for the start and end tokens
+            for i in range(max_length - 2):
                 x = self.next_token(
                     x,
                     encoder_outputs,
@@ -157,7 +139,7 @@ class Decoder(nn.Module):
                 )
                 if timer:
                     timer.push_event(f"Generated token {i}")
-                if eos_checker.test(x):
+                if x[:, -1] == self.decoder_args.end_of_seq_token_id:
                     break
             else:
                 # if the loop completes without breaking, add the end token
