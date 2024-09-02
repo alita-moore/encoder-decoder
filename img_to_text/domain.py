@@ -50,7 +50,7 @@ class EncoderArgs(BaseModel):
 
     @property
     def max_output_patches(self):
-        return (self.max_img_dimensions[0] * self.max_img_dimensions[1]) // self.patch_size
+        return (self.max_img_dimensions[0] // self.output_patch_size) * (self.max_img_dimensions[1] // self.output_patch_size)
 
 class Config(BaseModel):
     decoder_args: DecoderArgs
