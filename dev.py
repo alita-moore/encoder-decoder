@@ -62,7 +62,7 @@ import os
 os.makedirs("temp", exist_ok=True)
 
 compiled_model = get_model(config, "cuda")
-compiled_model.decoder.model.forward = torch.compile(compiled_model.decoder.model.forward, mode="max-autotune", fullgraph=True)  # type: ignore
+compiled_model.decoder.model = torch.compile(compiled_model.decoder.model, mode="max-autotune", fullgraph=True)  # type: ignore
 
 img = torch.randn(1, 1, 1536, 1152).to("cuda")
 

@@ -54,7 +54,7 @@ class Decoder(nn.Module):
         encoder_outputs: torch.Tensor,
         encoder_cache_pos: torch.Tensor,
         use_encoder_cache: bool,
-        timer: Timer | None = None
+        timer: Timer | None = None,
     ):
         last_input_ids, cache_position = self.prepare_inputs_for_generation(
             input_ids=input_ids,
