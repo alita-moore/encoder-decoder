@@ -120,14 +120,7 @@ class Decoder(nn.Module):
             encoder_cache_pos = torch.arange(
                 0, encoder_outputs.shape[1], device=encoder_outputs.device
             )
-            self.model.setup_cache(
-                encoder_outputs.shape[0],
-                self.decoder_args.max_seq_len,
-                self.max_patches,
-                device=encoder_outputs.device,
-                dtype=self.dtype,
-            )
-
+            
             # NOTE: we subtract 2 because we have to account for the start and end tokens
             for i in range(max_length - 2):
                 x = self.next_token(

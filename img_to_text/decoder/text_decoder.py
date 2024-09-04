@@ -20,6 +20,9 @@ class ModelConfig:
 
 
 class KVCache(nn.Module):
+    k_cache: torch.Tensor
+    v_cache: torch.Tensor
+
     def __init__(
         self,
         max_batch_size: int,
@@ -46,6 +49,10 @@ class KVCache(nn.Module):
         v_out[:, :, input_pos] = v_val
 
         return k_out, v_out
+
+    def zero(self):
+        self.k_cache.zero_()
+        self.v_cache.zero_()
 
 
 def sinusoids(length: int, channels: int, max_timescale: float = 10000) -> torch.Tensor:
@@ -149,7 +156,7 @@ class CausalSelfAttention(nn.Module):
             wk = state_dict.pop(prefix + "key.weight")
             wv = state_dict.pop(prefix + "value.weight")
             state_dict[prefix + "combined_qkv.weight"] = torch.cat([wq, wk, wv])
-    
+
     def forward(
         self,
         input_ids: Tensor,
@@ -251,7 +258,7 @@ class TextDecoder(nn.Module):
         encoder_outputs: Tensor,
         cache_pos: Tensor,
         encoder_cache_pos: Tensor,
-        use_encoder_cache: bool,
+        use_encoder_cache: bool = False,
     ):
         mask = self.causal_mask[None, None, cache_pos]
         input_ids = (
@@ -303,5 +310,5 @@ class TextDecoder(nn.Module):
 
     def reset_cache(self):
         for b in self.blocks:
-            b.attn.kv_cache = None
-            b.cross_attn.kv_cache = None
+            b.attn.kv_cache.zero()
+            b.cross_attn.kv_cache.zero()

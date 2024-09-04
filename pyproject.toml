@@ -16,6 +16,11 @@ ipykernel = "^6.29.5"
 torch = {version = "^2.4.0+cu124", source = "pytorch-gpu-src"}
 torchvision = {version = "^0.19.0+cu124", source = "pytorch-gpu-src"}
 torchaudio = {version = "^2.4.0+cu124", source = "pytorch-gpu-src"}
+onnx = "^1.16.2"
+onnxruntime = "^1.19.0"
+onnxruntime-gpu = "^1.19.0"
+pycuda = "^2024.1.2"
+tensorrt = "^10.3.0"
 
 [[tool.poetry.source]]
 name = "PyPI"

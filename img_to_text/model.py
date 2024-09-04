@@ -118,6 +118,6 @@ def get_model(
         bos_token_id=config.decoder_args.beg_of_seq_token_id,
         eos_token_id=config.decoder_args.end_of_seq_token_id,
         pad_token_id=config.decoder_args.pad_token_id,
-    ) 
+    )
 
     return model.to(device)
