@@ -243,7 +243,7 @@ class TextDecoder(nn.Module):
         self.n_head = n_head
         self.n_state = n_state
         self.token_embedding = nn.Embedding(n_vocab, n_state)
-        self.positional_embedding = nn.Parameter(torch.empty(n_ctx, n_state))
+        self.positional_embedding = nn.Parameter(torch.zeros(n_ctx, n_state))
 
         self.blocks: Iterable[DecoderAttentionBlock] = nn.ModuleList(  # type: ignore
             [DecoderAttentionBlock(n_state, n_head) for _ in range(n_layer)]
